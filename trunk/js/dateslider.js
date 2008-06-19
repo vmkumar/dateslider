@@ -43,7 +43,7 @@ DateSlider = Class.create({
 	      dragHandles:  true,
 	      dragBar:      true,
 	      dateFormat:   'd MMM yyyy',
-	      onEnd:        function(){},
+		  onEnd : null
 	    };
 		
     	Object.extend(this.options, options || { });
@@ -52,7 +52,7 @@ DateSlider = Class.create({
 		if (this.options.dragHandles == false) this.numberOfDays = this.oStartDate.getDiffDays(this.oEndDate);
 		this.centerDate = Date.today();
 		if (this.options.centerDate != null) this.centerDate = Date.parse(options['centerDate']);
-
+		
 		this.iLeftOffsetLH = this.barStartDate.getDiffDays(l_oStartDate)*this.options.dayWidth;
 		this.iLeftOffsetRH = this.barStartDate.getDiffDays(l_oEndDate)*this.options.dayWidth;			
 		
@@ -110,12 +110,6 @@ DateSlider = Class.create({
 										  zindex:'0'});
 		}
 	},
-	_bgDrag : function() {
-		/* Set the handlers while dragging the shiftpanel */
-		$('lefthandle').setStyle({left: ($('shiftpanel').offsetLeft-sliderReference.sliderBarMargin)+'px'});
-		$('righthandle').setStyle({left: ($('shiftpanel').offsetLeft + $('shiftpanel').offsetWidth-sliderReference.sliderBarMargin)+'px'});	
-		this._setDates();
-	},
 	_bgStopDrag : function() {
 		/* Move? */
 		l_iDiff = $('righthandle').offsetLeft + ($('sliderbar').offsetLeft-600);
@@ -125,9 +119,12 @@ DateSlider = Class.create({
 		var l_iLeft = '-'+($('righthandle').offsetLeft-590)+'px';
 		new Effect.Morph('sliderbar', { style: {left: l_iLeft}, duration:.5});
 		}	
+		
+		/* Call the callback function */
+		if(sliderReference.options.onEnd) sliderReference.options.onEnd();	    
   	},
 	createHandles : function(p_sBarId, p_sStartDate, p_sEndDate) {
-		/* Calculate positions */
+		/* Create the left and the right handle */
 		l_oLeftHandle = $(Builder.node('span', {className: 'leftHandle', id : 'lefthandle', style:'left:'+this.iLeftOffsetLH+'px'})).update('&nbsp;');		
 		l_oRightHandle = $(Builder.node('span', {className: 'rightHandle', id : 'righthandle', style:'left:'+this.iLeftOffsetRH+'px'})).update('&nbsp;');
 		
@@ -135,8 +132,23 @@ DateSlider = Class.create({
 		$(p_sBarId).appendChild(l_oRightHandle);
 
     if (this.options.dragHandles) {
-		  new Draggable(l_oLeftHandle,  {snap: this.handleLimitPos, containment: p_sBarId, constraint:'horizontal', onDrag :  sliderReference._leftDrag, onEnd : sliderReference._leftDrag});
-   		  new Draggable(l_oRightHandle,  {snap: this.handleLimitPos, containment: p_sBarId, constraint:'horizontal', onDrag : sliderReference._rightDrag, onEnd : sliderReference._rightDrag });
+		  /* Make the left handler draggable */
+		  new Draggable(l_oLeftHandle,  {
+		  								 snap: this.handleLimitPos,
+		  								 containment: p_sBarId,
+										 constraint:'horizontal',
+										 onDrag :  sliderReference._leftDrag,
+										 onEnd : sliderReference._leftDrag}
+										 );
+		 
+		  /* Make the right handler draggable */								 
+   		  new Draggable(l_oRightHandle,  {
+		  								snap: this.handleLimitPos,
+										containment: p_sBarId,
+										constraint:'horizontal',
+										onDrag : sliderReference._rightDrag,
+										onEnd : sliderReference._rightDrag
+										});
 		} else {
 			[l_oLeftHandle,l_oRightHandle].invoke('hide');	
 		}
@@ -153,18 +165,20 @@ DateSlider = Class.create({
 
 		l_oShiftPanel = $(Builder.node('div', {id : 'shiftpanel', style:'left:'+(this.iLeftOffsetLH)+'px; width:'+l_iBarWidth+'px'}));
 		$(p_sBarId).appendChild(l_oShiftPanel);		
-		new Draggable(l_oShiftPanel, {snap: this.handleLimitPos, constraint:'horizontal', starteffect : '', endeffect:'', zindex:'0', 
-		  onDrag:function() { 
-    		/* Set the handlers while dragging the shiftpanel */
-    		$('lefthandle').setStyle({left: ($('shiftpanel').offsetLeft-sliderReference.sliderBarMargin)+'px'});
-    		$('righthandle').setStyle({left: ($('shiftpanel').offsetLeft + $('shiftpanel').offsetWidth-sliderReference.sliderBarMargin)+'px'});						
-    		sliderReference._setDates();
-  	  		}, 
-  	  		onEnd:function() {
-  	    	// Move the shift panel to the location of the handles, since the handles match the begin and end date fields.
-			$('shiftpanel').setStyle({left: ($('lefthandle').offsetLeft+sliderReference.sliderBarMargin)+'px'}); 
-			sliderReference.options.onEnd();	    
-  	  	}});	
+		new Draggable(l_oShiftPanel, {snap: this.handleLimitPos,
+									  constraint:'horizontal',
+									  starteffect : '',
+									  endeffect:'',
+									  zindex:'0',
+									  onEnd : this._bgStopDrag.bindAsEventListener(this),
+									  onDrag:function() { 
+										/* Set the handlers while dragging the shiftpanel */
+										$('lefthandle').setStyle({left: ($('shiftpanel').offsetLeft-sliderReference.sliderBarMargin)+'px'});
+										$('righthandle').setStyle({left: ($('shiftpanel').offsetLeft + $('shiftpanel').offsetWidth-sliderReference.sliderBarMargin)+'px'});						
+										sliderReference._setDates();
+										}
+			}
+		); 
 	},
 	sliderLimitPos: function(x, y, drag)
 		{
