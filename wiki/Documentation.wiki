@@ -18,14 +18,15 @@ _Options:_
 
 The options object contains a number of options that allow you to dynamically change the behavior of the dateslider:
 
-||  *Option* || *Description* || *Default*
+||  *Option* || *Description* || *Default* ||
 ||  dayWidth || Width of 1 day in px || 1 ||
-
+||  dragHandles || Determines if the handles to drag are available || true ||
+||  dragBar || Determines if the bars to drag are available || true ||
+||  dateFormat|| Date format that is returned when using function attchFields. See  the [http://code.google.com/p/datejs/wiki/FormatSpecifiers DateJs Format specifiers] to customize the date format || d MMM yyyy ||
 
 _Return value_
 
 Instance of DateSlider.
-
 
 _Examples:_
 {{{
