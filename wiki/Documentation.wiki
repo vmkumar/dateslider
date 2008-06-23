@@ -6,19 +6,21 @@ _All the documentation you need to integrate the dateslider on your page_
 === DateSlider(`string` element_reference, `string` span_start, `string` span_end, `int` year_start, `int` year_end [, `object` options] ) ===
 
 _Parameters:_
-  ||*Parameter*||*Description*||
-  || element_reference || id our element of the reference div (container of the slider) ||
-  || span_start || initial start of the selected span (e.g. '2008-Feb-01') ||
-  || span_end || initial start of the selected span (e.g. '2008-May-01') ||
-  || year_start || First year that comes available in the slider (e.g. 2001) ||
-  || year_end || Last year that comes available in the slider (e.g. 2008) ||
-  || options || Optional object containing options (see reference below) ||
+||  *Parameter* || *Description* ||
+|| element_reference || id our element of the reference div (container of the slider) ||
+|| span_start || initial start of the selected span (e.g. '2008-Feb-01') ||
+|| span_end || initial start of the selected span (e.g. '2008-May-01') ||
+|| year_start || First year that comes available in the slider (e.g. 2001) ||
+|| year_end || Last year that comes available in the slider (e.g. 2008) ||
+|| options || Optional object containing options (see reference below) ||
 
 _Options:_
 
 The options object contains a number of options that allow you to dynamically change the behavior of the dateslider:
 
-  * dayWidth - 
+||  *Option* || *Description* || *Default*
+||  dayWidth || Width of 1 day in px || 1 ||
+
 
 _Return value_
 
