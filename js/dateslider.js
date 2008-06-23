@@ -75,12 +75,12 @@ DateSlider = Class.create({
 			if(l_oData.isLeapYear()) iDays = 366; else iDays = 365;  
 			
 			divWidth = sliderDayDivWidth*iDays;
-			l_oDiv = $(Builder.node('div', {className : 'slideYear', style : 'width:'+(divWidth-1)+'px'})).update(l_iYear);
+			l_oDiv = new Element('div', {className : 'slideYear', style : 'width:'+(divWidth-1)+'px'}).update(l_iYear);
 			
 			iTotalDays = 0;
 			(12).times(function(e) {
 				monthDivWidth = l_oData.getDaysInMonth()*sliderDayDivWidth;
-				l_oMonthDiv = Builder.node('div', {className : 'slideMonth',style : 'width:'+(monthDivWidth)+'px; left:'+iTotalDays+'px'});
+				l_oMonthDiv = new Element('div', {className : 'slideMonth',style : 'width:'+(monthDivWidth)+'px; left:'+iTotalDays+'px'});
 				if(e==0) { 
 					$(l_oMonthDiv).addClassName('firstMonth');
 				} else {
@@ -125,8 +125,8 @@ DateSlider = Class.create({
   	},
 	createHandles : function(p_sBarId, p_sStartDate, p_sEndDate) {
 		/* Create the left and the right handle */
-		l_oLeftHandle = $(Builder.node('span', {className: 'leftHandle', id : 'lefthandle', style:'left:'+this.iLeftOffsetLH+'px'})).update('&nbsp;');		
-		l_oRightHandle = $(Builder.node('span', {className: 'rightHandle', id : 'righthandle', style:'left:'+this.iLeftOffsetRH+'px'})).update('&nbsp;');
+		l_oLeftHandle = new Element('span', {className: 'leftHandle', id : 'lefthandle', style:'left:'+this.iLeftOffsetLH+'px'}).update('&nbsp;');		
+		l_oRightHandle = new Element('span', {className: 'rightHandle', id : 'righthandle', style:'left:'+this.iLeftOffsetRH+'px'}).update('&nbsp;');
 		
 		$(p_sBarId).appendChild(l_oLeftHandle);
 		$(p_sBarId).appendChild(l_oRightHandle);
@@ -163,7 +163,7 @@ DateSlider = Class.create({
 		/* Calculate width */
 		l_iBarWidth = (this.iLeftOffsetRH-this.iLeftOffsetLH)+(2*this.sliderBarMargin);
 
-		l_oShiftPanel = $(Builder.node('div', {id : 'shiftpanel', style:'left:'+(this.iLeftOffsetLH)+'px; width:'+l_iBarWidth+'px'}));
+		l_oShiftPanel = new Element('div', {id : 'shiftpanel', style:'left:'+(this.iLeftOffsetLH)+'px; width:'+l_iBarWidth+'px'});
 		$(p_sBarId).appendChild(l_oShiftPanel);		
 		new Draggable(l_oShiftPanel, {snap: this.handleLimitPos,
 									  constraint:'horizontal',
