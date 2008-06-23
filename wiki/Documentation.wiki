@@ -1,13 +1,32 @@
-# All the documentation you need to integrate the dateslider on your page
+#labels documentation,dateslider
+_All the documentation you need to integrate the dateslider on your page_
 
-= Introduction =
+= Classes =
 
-Add your content here.
+=== DateSlider(`string` element_reference, `string` span_start, `string` span_end, `int` year_start, `int` year_end [, `object` options] ) ===
+
+_Parameters:_
+  ||*Parameter*||*Description*||
+  || element_reference || id our element of the reference div (container of the slider) ||
+  || span_start || initial start of the selected span (e.g. '2008-Feb-01') ||
+  || span_end || initial start of the selected span (e.g. '2008-May-01') ||
+  || year_start || First year that comes available in the slider (e.g. 2001) ||
+  || year_end || Last year that comes available in the slider (e.g. 2008) ||
+  || options || Optional object containing options (see reference below) ||
+
+_Options:_
+
+The options object contains a number of options that allow you to dynamically change the behavior of the dateslider:
+
+  * dayWidth - 
+
+_Return value_
+
+Instance of DateSlider.
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+_Examples:_
+{{{
+/* Create a standard dateslider, starting at may 01, ending at may 31, available years: 2007 - 2008 */
+p_oDateSlider = new DateSlider('sliderbar', '2008-May-01', '2008-May-31', 2007, 2008);	
+}}}
