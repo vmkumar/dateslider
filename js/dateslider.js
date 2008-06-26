@@ -43,12 +43,13 @@ DateSlider = Class.create({
 	      dragHandles:  true,
 	      dragBar:      true,
 	      dateFormat:   'd MMM yyyy',
-		  onEnd : null
+		  onEnd : null,
+		  onStart : null
 	    };
 		
     	Object.extend(this.options, options || { });
 		
-   		this.numberOfDays = null;
+		this.numberOfDays = null;
 		if (this.options.dragHandles == false) this.numberOfDays = this.oStartDate.getDiffDays(this.oEndDate);
 		this.centerDate = Date.today();
 		if (this.options.centerDate != null) this.centerDate = Date.parse(options['centerDate']);
@@ -131,27 +132,28 @@ DateSlider = Class.create({
 		$(p_sBarId).appendChild(l_oLeftHandle);
 		$(p_sBarId).appendChild(l_oRightHandle);
 
-    if (this.options.dragHandles) {
-		  /* Make the left handler draggable */
-		  new Draggable(l_oLeftHandle,  {
+		  if(this.options.dragHandles) {
+			  /* Make the left handler draggable */
+			  new Draggable(l_oLeftHandle,  {
 		  								 snap: this.handleLimitPos,
 		  								 containment: p_sBarId,
 										 constraint:'horizontal',
 										 onDrag :  sliderReference._leftDrag,
 										 onEnd : sliderReference._leftDrag}
 										 );
-		 
-		  /* Make the right handler draggable */								 
-   		  new Draggable(l_oRightHandle,  {
+			 
+			  /* Make the right handler draggable */								 
+			  new Draggable(l_oRightHandle,  {
 		  								snap: this.handleLimitPos,
 										containment: p_sBarId,
 										constraint:'horizontal',
 										onDrag : sliderReference._rightDrag,
 										onEnd : sliderReference._rightDrag
-										});
-		} else {
-			[l_oLeftHandle,l_oRightHandle].invoke('hide');	
-		}
+										});		  	
+		  } else {
+		  	l_oLeftHandle.setStyle({opacity:.01,cursor:'pointer'});
+			l_oRightHandle.setStyle({opacity:.01,cursor:'pointer'});
+		  }		 
 	},
 	dragShiftPanel : function() { 
   		/* Set the handlers while dragging the shiftpanel */
@@ -172,11 +174,14 @@ DateSlider = Class.create({
 									  zindex:'0',
 									  onEnd : this._bgStopDrag.bindAsEventListener(this),
 									  onDrag:function() { 
-										/* Set the handlers while dragging the shiftpanel */
-										$('lefthandle').setStyle({left: ($('shiftpanel').offsetLeft-sliderReference.sliderBarMargin)+'px'});
-										$('righthandle').setStyle({left: ($('shiftpanel').offsetLeft + $('shiftpanel').offsetWidth-sliderReference.sliderBarMargin)+'px'});						
-										sliderReference._setDates();
-										}
+											/* Set the handlers while dragging the shiftpanel */
+											$('lefthandle').setStyle({left: ($('shiftpanel').offsetLeft-sliderReference.sliderBarMargin)+'px'});
+											$('righthandle').setStyle({left: ($('shiftpanel').offsetLeft + $('shiftpanel').offsetWidth-sliderReference.sliderBarMargin)+'px'});						
+											sliderReference._setDates();
+										},
+									  onStart : function() {
+									  		if(sliderReference.options.onStart) sliderReference.options.onStart();
+									  }
 			}
 		); 
 	},
@@ -214,12 +219,14 @@ DateSlider = Class.create({
 			this.oEndField.setValue(l_oDate2.toString(this.options.dateFormat));		
 		}	
 	},
-	_rightDrag : function () {
+	_rightDrag : function (e, ev) {
+		if(ev.type == "mouseup" && sliderReference.options.onEnd != false) sliderReference.options.onEnd();		
 		l_panelLength = $('righthandle').offsetLeft - $('lefthandle').offsetLeft - 5;
 		$('shiftpanel').setStyle({width : (l_panelLength+2*sliderReference.sliderBarMargin)+'px'});																	
 		sliderReference._setDates();	
 	},
-	_leftDrag : function() {
+	_leftDrag : function(e, ev) {
+		if(ev.type == "mouseup" && sliderReference.options.onEnd != false) sliderReference.options.onEnd();
 		l_panelLength = $('righthandle').offsetLeft - $('lefthandle').offsetLeft - 4;
 		$('shiftpanel').setStyle({left: ($('lefthandle').offsetLeft+4)+'px', width : l_panelLength+'px'});															
 		sliderReference._setDates();		

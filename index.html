@@ -25,18 +25,24 @@ input {
 <label for = "datestart">Start:</label>  <input type = "text" id = "datestart">
 <label for = "dateend">End:</label>  <input typde = "text" id = "dateend">
 </form>
+
 <script type="text/javascript" src="js/prototype.js"></script>
 <script type="text/javascript" src="js/scriptaculous.js?load=effects,dragdrop"></script>
+
 <script type="text/javascript" src="js/date-en-US.js"></script>
 <script type="text/javascript" src="js/dateslider.js"></script>
+
 <script language = "javascript">	
 
 var oDropped = function() {
-	
+	console.log('dropped');
 }
 
-p_oDateSlider = new DateSlider('sliderbar', '2008-May-01', '2008-May-31', 2007, 2008, {dragHandles:true, onEnd : oDropped, dayWidth:1});	
+var oStart = function() {
+	console.log('started');
+}
 
+p_oDateSlider = new DateSlider('sliderbar', '2008-May-01', '2008-May-31', 2007, 2009, {dragHandles:true, onEnd : oDropped, dayWidth:1, onStart : oStart});	
 p_oDateSlider.attachFields($('datestart'), $('dateend'));
 
 </script>
