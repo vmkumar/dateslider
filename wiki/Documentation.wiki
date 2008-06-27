@@ -32,6 +32,17 @@ Instance of DateSlider.
 
 _Examples:_
 {{{
-/* Create a standard dateslider, starting at may 01, ending at may 31, available years: 2007 - 2008 */
-p_oDateSlider = new DateSlider('sliderbar', '2008-May-01', '2008-May-31', 2007, 2008);	
+/* Create a dateslider, starting at may 01, ending at may 31, available years: 2007 - 2008 */
+p_oDateSlider = new DateSlider('sliderbar', '2008-May-01', '2008-May-31', 2007, 2008);
+
+/* Create a dateslider with some options */
+l_oOptions = {
+	dragHandles:false,
+	onEnd : function() { alert('Stopped dragging!!') },
+	onStart : function() { alert('Started dragging!!') },
+	dayWidth: 2,
+	dateFormat : 'MMMM d, yyyy'
+}
+
+p_oDateSlider = new DateSlider('sliderbar', '2008-Jan-01', '2008-May-31', 2007, 2009, l_oOptions);	
 }}}
