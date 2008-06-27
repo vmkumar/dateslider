@@ -34,15 +34,16 @@ input {
 
 <script language = "javascript">	
 
-var oDropped = function() {
-	console.log('dropped');
+
+l_oOptions = {
+	dragHandles:false,
+	onEnd : function() { alert('Stopped dragging!!') },
+	onStart : function() { alert('Started dragging!!') },
+	dayWidth: 2,
+	dateFormat : 'MMMM d, yyyy'
 }
 
-var oStart = function() {
-	console.log('started');
-}
-
-p_oDateSlider = new DateSlider('sliderbar', '2008-May-01', '2008-May-31', 2007, 2009, {dragHandles:true, onEnd : oDropped, dayWidth:1, onStart : oStart});	
+p_oDateSlider = new DateSlider('sliderbar', '2008-May-01', '2008-May-31', 2007, 2009, l_oOptions);	
 p_oDateSlider.attachFields($('datestart'), $('dateend'));
 
 </script>
