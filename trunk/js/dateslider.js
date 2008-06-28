@@ -220,20 +220,21 @@ DateSlider = Class.create({
 		}	
 	},
 	_rightDrag : function (e, ev) {
-		if(ev.type == "mouseup" && sliderReference.options.onEnd != false) sliderReference.options.onEnd();		
+		/* Refactor this and the next one (merge) */
+		if(ev.type == "mouseup" && sliderReference.options.onEnd != null) sliderReference.options.onEnd();		
 		l_panelLength = $('righthandle').offsetLeft - $('lefthandle').offsetLeft - 5;
 		$('shiftpanel').setStyle({width : (l_panelLength+2*sliderReference.sliderBarMargin)+'px'});																	
 		sliderReference._setDates();	
 	},
 	_leftDrag : function(e, ev) {
-		if(ev.type == "mouseup" && sliderReference.options.onEnd != false) sliderReference.options.onEnd();
+		if(ev.type == "mouseup" && sliderReference.options.onEnd != null) sliderReference.options.onEnd();
 		l_panelLength = $('righthandle').offsetLeft - $('lefthandle').offsetLeft - 4;
 		$('shiftpanel').setStyle({left: ($('lefthandle').offsetLeft+4)+'px', width : l_panelLength+'px'});															
 		sliderReference._setDates();		
 	},
 	morphTo : function (p_oDateStart, p_oDateEnd) {
 		l_offsetLeftLH = this.barStartDate.getDiffDays(p_oDateStart)*this.options.dayWidth;
-		l_offsetLeftRH = this.barEndDate.getDiffDays(p_oDateEnd)*this.options.dayWidth;
+		l_offsetLeftRH = this.barStartDate.getDiffDays(p_oDateEnd)*this.options.dayWidth;
 		l_panelLength = l_offsetLeftRH - l_offsetLeftLH  - 4;
 		$('lefthandle').morph('left:'+l_offsetLeftLH+'px');
 		$('righthandle').morph('left:'+l_offsetLeftRH+'px');
@@ -246,22 +247,12 @@ DateSlider = Class.create({
 		p_oStartField.setValue(this.oStartDate.toString(this.options.dateFormat));
 		p_oEndField.setValue(this.oEndDate.toString(this.options.dateFormat));
 		
-		p_oStartField.observe('blur', function(e) {
-			/* Morph to the new date */
-			l_oStartDate = Date.parse(p_oStartField.getValue());
-			if (sliderReference.options.dragHandles) {
-			  l_oEndDate = Date.parse(p_oEndField.getValue());
-			} else {
-			  l_oEndDate = l_oStartDate.clone().addDays(this.numberOfDays);
-		  }
-			sliderReference.morphTo(l_oStartDate, l_oEndDate);
-		});	
-		
-		p_oEndField.observe('blur', function(e) {
-			/* Morph to the new date */
-			l_oStartDate = Date.parse(p_oStartField.getValue());
-			l_oEndDate = Date.parse(p_oEndField.getValue());
-			sliderReference.morphTo(l_oStartDate, l_oEndDate);
-		});		
+		[p_oStartField, p_oEndField].each(function(e) {
+			e.observe('blur', function() {
+				l_oStartDate = Date.parse(p_oStartField.getValue());
+				l_oEndDate = Date.parse(p_oEndField.getValue());	
+				sliderReference.morphTo(l_oStartDate, l_oEndDate);
+			}); // end observe
+		}); // end each
 	}
 });
