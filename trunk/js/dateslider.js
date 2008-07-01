@@ -61,6 +61,8 @@ DateSlider = Class.create({
 		this.createHandles(p_sBarId, p_sStartDate, p_sEndDate);
 		this.createShiftPanel(p_sBarId, p_sStartDate, p_sEndDate);
 		
+		this.barId = p_sBarId;
+		
 	},
 	createSliderBar : function(p_sBarId) {
 		/* Create the backgound (dategrid) :
@@ -80,7 +82,7 @@ DateSlider = Class.create({
 			
 			iTotalDays = 0;
 			(12).times(function(e) {
-				monthDivWidth = l_oData.getDaysInMonth()*sliderDayDivWidth;
+				monthDivWidth = l_oData.getDaysInMonth()*sliderReference.options.dayWidth;
 				l_oMonthDiv = new Element('div', {className : 'slideMonth',style : 'width:'+(monthDivWidth)+'px; left:'+iTotalDays+'px'});
 				if(e==0) { 
 					$(l_oMonthDiv).addClassName('firstMonth');
@@ -212,7 +214,7 @@ DateSlider = Class.create({
 		  l_oDate2 = this.barStartDate.clone().addDays(l_iRightPos);
 		} else {
 		  l_oDate2 = l_oDate.clone().addDays(this.numberOfDays);
-		}
+		} 
 	
 		if(this.oStartField && this.oEndField) {
 			this.oStartField.setValue(l_oDate.toString(this.options.dateFormat));		
@@ -228,7 +230,7 @@ DateSlider = Class.create({
 	},
 	_leftDrag : function(e, ev) {
 		if(ev.type == "mouseup" && sliderReference.options.onEnd != null) sliderReference.options.onEnd();
-		l_panelLength = $('righthandle').offsetLeft - $('lefthandle').offsetLeft - 4;
+		l_panelLength = $('righthandle').offsetLeft - $('lefthandle').offsetLeft - 5;
 		$('shiftpanel').setStyle({left: ($('lefthandle').offsetLeft+4)+'px', width : l_panelLength+'px'});															
 		sliderReference._setDates();		
 	},
@@ -254,5 +256,33 @@ DateSlider = Class.create({
 				sliderReference.morphTo(l_oStartDate, l_oEndDate);
 			}); // end observe
 		}); // end each
+	},
+	_removeSliderBar : function() {
+		$(this.barId).update('');
+	},
+	zoomIn : function() {
+		this._zoom(1);
+	},
+	zoomOut : function() {
+		this._zoom(-1);	
+	},
+	_zoom : function(p_iFactor) {
+		/* Get the current dates */
+		l_iLeftPos = $('lefthandle').offsetLeft/this.options.dayWidth;
+		l_iRightPos = $('righthandle').offsetLeft/this.options.dayWidth;
+		
+		l_oDateStart = this.barStartDate.clone().addDays(l_iLeftPos);
+		l_oDateEnd	 = this.barStartDate.clone().addDays(l_iRightPos);
+				
+		this._removeSliderBar();
+		this.options.dayWidth = this.options.dayWidth+p_iFactor;
+		
+		this.iLeftOffsetLH = this.barStartDate.getDiffDays(l_oDateStart)*this.options.dayWidth;
+		this.iLeftOffsetRH = this.barStartDate.getDiffDays(l_oDateEnd)*this.options.dayWidth;	
+				
+		this.createSliderBar(this.barId);
+		this.createHandles(this.barId, l_oDateStart, l_oDateEnd);
+		
+		this.createShiftPanel(this.barId, l_oDateStart, l_oDateEnd);		
 	}
 });
