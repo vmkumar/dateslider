@@ -23,6 +23,8 @@ The options object contains a number of options that allow you to dynamically ch
 ||  dragHandles || Determines if the handles to drag are available || true ||
 ||  dragBar || Determines if the bars to drag are available || true ||
 ||  dateFormat|| Date format that is returned when using function attchFields. See  the [http://code.google.com/p/datejs/wiki/FormatSpecifiers DateJs Format specifiers] to customize the date format || d MMM yyyy ||
+|| zoom || Determines if the zooming functionality is available  || false ||
+|| centerDate || Centered date when initializing the dateslider  || current date ||
 || onEnd || Callback function which is triggered when dropping the bar or the handles || - ||
 || onStart || Callback function which is triggered when the users start to drag the bar or the handlers || - ||
 
