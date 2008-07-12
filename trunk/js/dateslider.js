@@ -43,11 +43,14 @@ DateSlider = Class.create({
 	      dragHandles:  true,
 	      dragBar:      true,
 	      dateFormat:   'd MMM yyyy',
+		  zoom : false,
 		  onEnd : null,
 		  onStart : null
 	    };
 		
     	Object.extend(this.options, options || { });
+		
+		this.barId = p_sBarId;
 		
 		this.numberOfDays = null;
 		if (this.options.dragHandles == false) this.numberOfDays = this.oStartDate.getDiffDays(this.oEndDate);
@@ -61,7 +64,9 @@ DateSlider = Class.create({
 		this.createHandles(p_sBarId, p_sStartDate, p_sEndDate);
 		this.createShiftPanel(p_sBarId, p_sStartDate, p_sEndDate);
 		
-		this.barId = p_sBarId;
+		if(this.options.zoom) this.setZoom();
+		
+		
 		
 	},
 	createSliderBar : function(p_sBarId) {
@@ -222,7 +227,6 @@ DateSlider = Class.create({
 		}	
 	},
 	_rightDrag : function (e, ev) {
-		/* Refactor this and the next one (merge) */
 		if(ev.type == "mouseup" && sliderReference.options.onEnd != null) sliderReference.options.onEnd();		
 		l_panelLength = $('righthandle').offsetLeft - $('lefthandle').offsetLeft - 5;
 		$('shiftpanel').setStyle({width : (l_panelLength+2*sliderReference.sliderBarMargin)+'px'});																	
@@ -230,7 +234,7 @@ DateSlider = Class.create({
 	},
 	_leftDrag : function(e, ev) {
 		if(ev.type == "mouseup" && sliderReference.options.onEnd != null) sliderReference.options.onEnd();
-		l_panelLength = $('righthandle').offsetLeft - $('lefthandle').offsetLeft - 5;
+		l_panelLength = $('righthandle').offsetLeft - $('lefthandle').offsetLeft - 4;
 		$('shiftpanel').setStyle({left: ($('lefthandle').offsetLeft+4)+'px', width : l_panelLength+'px'});															
 		sliderReference._setDates();		
 	},
@@ -267,6 +271,7 @@ DateSlider = Class.create({
 		this._zoom(-1);	
 	},
 	_zoom : function(p_iFactor) {
+		if((this.options.dayWidth+p_iFactor) < 1) return;
 		/* Get the current dates */
 		l_iLeftPos = $('lefthandle').offsetLeft/this.options.dayWidth;
 		l_iRightPos = $('righthandle').offsetLeft/this.options.dayWidth;
@@ -283,6 +288,38 @@ DateSlider = Class.create({
 		this.createSliderBar(this.barId);
 		this.createHandles(this.barId, l_oDateStart, l_oDateEnd);
 		
-		this.createShiftPanel(this.barId, l_oDateStart, l_oDateEnd);		
+		this.createShiftPanel(this.barId, l_oDateStart, l_oDateEnd);	
+		this.centerBar();	
+	},
+	setZoom : function() {
+		l_oZoomIn = new Element('a', {className : 'zoom', href : '#'})
+							   .update('zoom in')
+							   .observe('click', function(ev) {
+							   		sliderReference.zoomIn();
+							   		ev.stop();
+							   });
+		
+		l_oZoomOut = new Element('a', {className : 'zoom', href : '#'})
+							   .update('zoom out')
+							   .observe('click', function(ev) {
+							   		sliderReference.zoomOut();
+							   		ev.stop();
+							   });		
+		
+		
+		l_oZoomPanel = new Element('div', {className : 'zoomPanel'});
+				
+		l_oZoomPanel.appendChild(l_oZoomIn);
+		l_oZoomPanel.appendChild(document.createTextNode(' | '))
+		l_oZoomPanel.appendChild(l_oZoomOut);
+		
+		$(this.barId).up().appendChild(l_oZoomPanel);
+	},
+	centerBar : function() {
+	
+		var l_iPanelWidth = this.iLeftOffsetRH-this.iLeftOffsetLH;
+		var l_iShiftContainerWidth = $('sliderbar').up().getWidth();
+		
+		$('sliderbar').setStyle({left:(this.iLeftOffsetLH-(2*this.iLeftOffsetLH)+(l_iShiftContainerWidth/2)-(l_iPanelWidth/2))+'px'});
 	}
 });

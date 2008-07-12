@@ -51,10 +51,7 @@ h1 {
 				<div id = "sliderbar"></div>
 			</div>			
 		</div>
-		<div>
-			<input type = "button" id = "zoomin" value = "zoom in" />
-			<input type = "button" id = "zoomout" value = "zoom out" />
-		</div>
+
 	</fieldset>
 </form>
 <script type="text/javascript" src="js/prototype.js"></script>
@@ -68,7 +65,8 @@ h1 {
 l_oOptions = {
 	dragHandles:true,
 	dayWidth: 1,
-	dateFormat : 'MM-d-yyyy'
+	dateFormat : 'MM-d-yyyy',
+	zoom : true
 }
 
 /* Create the dateslider */
@@ -82,13 +80,6 @@ p_oDateSlider.attachFields($('datestart'), $('dateend'));
 	}); // end focus
 }); // end each
 
-$('zoomin').observe('click', function(ev) {
-	p_oDateSlider.zoomIn();	
-});
-
-$('zoomout').observe('click', function(ev) {
-	p_oDateSlider.zoomOut();	
-});
 </script>
 </body>
 </html>
