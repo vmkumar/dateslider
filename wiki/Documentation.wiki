@@ -43,7 +43,8 @@ l_oOptions = {
 	onEnd : function() { alert('Stopped dragging!!') },
 	onStart : function() { alert('Started dragging!!') },
 	dayWidth: 2,
-	dateFormat : 'MMMM d, yyyy'
+	dateFormat : 'MMMM d, yyyy',
+	zoom : true    
 }
 
 p_oDateSlider = new DateSlider('sliderbar', '2008-Jan-01', '2008-May-31', 2007, 2009, l_oOptions);	
